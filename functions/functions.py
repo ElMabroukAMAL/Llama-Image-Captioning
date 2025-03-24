@@ -2,9 +2,12 @@ from groq import Groq
 import base64
 import os
 import json
+import requests
 
 # Set up Groq API Key
 os.environ['GROQ_API_KEY'] = json.load(open('credentials.json', 'r'))['groq_token']
+# Set up HUGGINGFACE API Key
+HUGGINGFACE_API_TOKEN= json.load(open('credentials.json', 'r'))['groq_token']
 
 # Function to encode the image from local file
 def encode_image(image_path):
@@ -41,3 +44,18 @@ def generate_caption(uploaded_image):
        model="llama-3.2-90b-vision-preview",
    )
    return chat_completion.choices[0].message.content
+
+
+def generate_speech_from_text(message):
+    """
+    Uses HuggingFace's ESPnet text-to-speech model to generate audio from a text (message).
+    Sends a POST request with the input text to the HuggingFace API and saves the response as a .flac audio file.
+    """
+    API_URL = "https://router.huggingface.co/hf-inference/models/espnet/kan-bayashi_ljspeech_vits"
+    headers = {"Authorization": f"Bearer {HUGGINGFACE_API_TOKEN}"}
+    payloads = {
+        "inputs": message
+    }
+    response = requests.post(API_URL, headers=headers, json=payloads)
+    with open("generated_audio.flac", "wb") as file:
+        file.write(response.content)

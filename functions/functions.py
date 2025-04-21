@@ -7,7 +7,7 @@ import requests
 # Set up Groq API Key
 os.environ['GROQ_API_KEY'] = json.load(open('credentials.json', 'r'))['groq_token']
 # Set up HUGGINGFACE API Key
-HUGGINGFACE_API_TOKEN= json.load(open('credentials.json', 'r'))['groq_token']
+HUGGINGFACE_API_TOKEN= json.load(open('credentials.json', 'r'))['HUGGINGFACE_API_TOKEN']
 
 # Function to encode the image from local file
 def encode_image(image_path):
